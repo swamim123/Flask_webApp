@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EMPLOYEE CRUD Operations</title>
+</head><body>
+
+
+    {{message}} <br><br>
+    <form action="/employee/save" method="POST">
+        Employee Id : <input type="text" name="empId" value=""> <br><br>
+        Employee Name : <input type="text" name="empName" value=""> <br><br>
+        Employee Email : <input type="text" name="empEmail" value=""> <br><br>
+        Employee Gender :  <input type="radio" name="empGender" value="M"> Male
+                            <input type="radio" name="empGender" value="F"> Female
+                        <br><br>
+        File Type :  <input type="checkbox" name="fileType" value="T"> TEXT
+                     <input type="checkbox" name="fileType" value="J"> JSON
+                     <input type="checkbox" name="fileType" value="X"> EXCEL
+                     <input type="checkbox" name="fileType" value="S" disabled> SQLITE3
+                        <input type="checkbox" name="fileType" value="C"> CSV
+ <br><br>
+
+    <input type="submit">
+    </form>
+
+ <br><br>
+    <form action="/file/read" method="post">
+            Choose Which File Data : <select name="fileType">
+        <option value="J">JSON</option>
+        <option value="T">TEXT</option>
+        <option value="X">EXCEL</option>
+        <option value="C">CSV</option>
+    </select>
+ <input type="submit" name="show data" value="show data">
+    </form>
+ <br><br>
+
+    <table border="1">
+            <thead>
+                <th>EMP ID</th>  <th>EMP NAME</th>  <th>EMP EMAIL</th>  <th>EMP GENDER</th>
+            </thead>
+        <tbody>
+
+            {% for emp in emplist %}
+                <tr>
+                    <td>{{emp.empId}}</td>
+                    <td>{{emp.empName}}</Td>
+                    <td>{{emp.empEmail}}</Td>
+                    <td>{{emp.empGender}}</Td>
+
+                </tr>
+            {% endfor %}
+
+</tbody>
+    </table>
+</body>
+</html>

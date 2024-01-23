@@ -1,4 +1,7 @@
+from flask import Blueprint, jsonify
+
 from flask import Flask, request, render_template
+import os
 
 app = Flask(__name__)
 
@@ -21,12 +24,12 @@ e1 = Employee(101, 'AAA', 'abc@gmail.com', 'M')
 e2 = Employee(102, 'BBB', 'xxc@gmail.com', 'F')
 
 # FILE_PATH = '/Users/swamirajmathpati/Desktop/flask_proj/Flask_webApp/employee'
-FILE_PATH = 'D:\pythonProject\RW\employee'
-
-JSON_FILE_PATH = FILE_PATH + "emp.json"
-TEXT_FILE_PATH = FILE_PATH + "emp.txt"
-EXCEL_FILE_PATH = FILE_PATH + "emp.xlsx"
-CSV_FILE_PATH = FILE_PATH + "emp.csv"
+# FILE_PATH = os.path.dirname('Flask_webApp')
+FILE_PATH = '/usr/src/app/'
+JSON_FILE_PATH = FILE_PATH + "employeeemp.json"
+TEXT_FILE_PATH = FILE_PATH + "employeeemp.txt"
+EXCEL_FILE_PATH = FILE_PATH + "employeeemp.xlsx"
+CSV_FILE_PATH = FILE_PATH + "employeeemp.csv"
 
 
 # JSON_FILE_PATH = FILE_PATH + "emp.json"
@@ -156,9 +159,6 @@ def papulate_emplist():
             emplist = read_json_from_file()
     return render_template('employee.html', emplist=emplist)
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
 
 '''
 

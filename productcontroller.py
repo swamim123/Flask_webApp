@@ -1,11 +1,10 @@
-from flask import Flask,request,render_template
-
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
 
 class Employee:
-    def __init__(self,empId,empName,empEmail,empGender,fileType=None):
+    def __init__(self, empId, empName, empEmail, empGender, fileType=None):
         self.empId = empId
         self.empName = empName
         self.empEmail = empEmail
@@ -17,34 +16,41 @@ class Employee:
     def __repr__(self):
         return str(self)
 
-e1 = Employee(101,'AAA','abc@gmail.com','M')
-e2 = Employee(102,'BBB','xxc@gmail.com','F')
 
+e1 = Employee(101, 'AAA', 'abc@gmail.com', 'M')
+e2 = Employee(102, 'BBB', 'xxc@gmail.com', 'F')
 
-FILE_PATH = 'D:\pythonProject\RW\employee'
+FILE_PATH = '/Users/swamirajmathpati/Desktop/flask_proj/Flask_webApp/employee'
 JSON_FILE_PATH = FILE_PATH + "emp.json"
 TEXT_FILE_PATH = FILE_PATH + "emp.txt"
 EXCEL_FILE_PATH = FILE_PATH + "emp.xlsx"
 CSV_FILE_PATH = FILE_PATH + "emp.csv"
-#JSON_FILE_PATH = FILE_PATH + "emp.json"
+
+
+# JSON_FILE_PATH = FILE_PATH + "emp.json"
 
 
 def write_into_txt(emp):
     print('Data Writing started in Text file....')
-    with open(TEXT_FILE_PATH,'a') as file:
-        empstr = str(emp.empId) +"\t\t"+ emp.empName +"\t\t"+ emp.empEmail +"\t\t"+ emp.empGender+"\n"
+    with open(TEXT_FILE_PATH, 'a') as file:
+        empstr = str(emp.empId) + "\t\t" + emp.empName + "\t\t" + emp.empEmail + "\t\t" + emp.empGender + "\n"
         file.writelines(empstr)
     print('Data Writing Completed -- Text')
 
-#write_into_txt(e1)
-#import sys
-#sys.exit(0)
+
+# write_into_txt(e1)
+# import sys
+# sys.exit(0)
 
 import json
+
+
 def write_into_json(emp):
-    with open(JSON_FILE_PATH,'a') as file:
-        json.dump(emp.__dict__,file)
+    with open(JSON_FILE_PATH, 'a') as file:
+        json.dump(emp.__dict__, file)
         file.writelines("\n")
+
+
 #
 # write_into_json(e2)
 # write_into_txt(e1)
@@ -63,24 +69,26 @@ def write_into_csv(emp):
 # import sys
 # sys.exit(0)
 import openpyxl
-def write_into_excel(emp):
 
+
+def write_into_excel(emp):
     try:
         workbook = openpyxl.load_workbook(EXCEL_FILE_PATH)
         sheet = workbook['emp_data']
         lastrow = sheet.max_row + 1
 
-    except :
+    except:
         workbook = openpyxl.Workbook()  # BLANK WORKBOOK CREATED
         sheet = workbook.create_sheet('emp_data')  # SHEET IS CREATED
         lastrow = 1
 
     lastrow = str(lastrow)
-    sheet['A'+lastrow] = emp.empId                     #CELL MEIN  --. DATA WRITE KR RH HAI
-    sheet['B'+lastrow] = emp.empName
-    sheet['C'+lastrow] = emp.empEmail
-    sheet['D'+lastrow] = emp.empGender
+    sheet['A' + lastrow] = emp.empId  # CELL MEIN  --. DATA WRITE KR RH HAI
+    sheet['B' + lastrow] = emp.empName
+    sheet['C' + lastrow] = emp.empEmail
+    sheet['D' + lastrow] = emp.empGender
     workbook.save(EXCEL_FILE_PATH)
+
 
 # write_into_excel(e1)
 #
@@ -91,23 +99,24 @@ def write_into_sqlite3(emp):
     pass
 
 
-FILE_TYPES_FUN_REF  =  {
-            "J" : write_into_json,
-            "X" : write_into_excel,
-            "C" : write_into_csv,
-            "S" : write_into_sqlite3,
-            "T" : write_into_txt}
+FILE_TYPES_FUN_REF = {
+    "J": write_into_json,
+    "X": write_into_excel,
+    "C": write_into_csv,
+    "S": write_into_sqlite3,
+    "T": write_into_txt}
+
 
 @app.route("/")
 @app.route("/employee")
-@app.route("/employee/save",methods = ["GET","POST"])
+@app.route("/employee/save", methods=["GET", "POST"])
 def employee_crud_landing_page():
     message = ''
     if request.method == 'POST':
         formdata = request.form
-        emp = Employee(**formdata)        #formdata -- dict --> Employee Object
-        print('EMPINSTANCE --',emp)
-        fileTypes = formdata.getlist('fileType')  #["J","C","S"]
+        emp = Employee(**formdata)  # formdata -- dict --> Employee Object
+        print('EMPINSTANCE --', emp)
+        fileTypes = formdata.getlist('fileType')  # ["J","C","S"]
         if fileTypes:
             for type in fileTypes:
                 funref = FILE_TYPES_FUN_REF.get(type)
@@ -115,12 +124,12 @@ def employee_crud_landing_page():
             message = f"Data Written Successfully into specified file formats {fileTypes}"
         else:
             message = "You should select File Types...!"
-    return render_template('employee.html',message = message)
+    return render_template('employee.html', message=message)
 
 
 def read_json_from_file():
     empList = []
-    with open(JSON_FILE_PATH,'r') as file:
+    with open(JSON_FILE_PATH, 'r') as file:
         alllines = file.readlines()
 
         for line in alllines:
@@ -128,18 +137,24 @@ def read_json_from_file():
             print(emp)
             empList.append(emp)
     return empList
+
+
 read_json_from_file()
+
+
 # import sys
 # sys.exit(0)
 
-@app.route("/file/read",methods = ['POST'])
+@app.route("/file/read", methods=['POST'])
 def papulate_emplist():
     emplist = []
     if request.method == 'POST':
         fileType = request.form.get('fileType')
         if fileType == "J":
             emplist = read_json_from_file()
-    return render_template('employee.html',emplist = emplist)
+    return render_template('employee.html', emplist=emplist)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
 
